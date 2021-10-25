@@ -9,11 +9,13 @@ function ModelViewer() {
     <div className="container d-flex justify-content-center align-items-center">
       <model-viewer
         src={url}
+        alt="3D model"
         ar
         ar-modes="webxr scene-viewer quick-look"
         seamless-poster
         shadow-intensity="1"
         camera-controls
+        poster="https://image.freepik.com/free-vector/chair-realistic-illustration_1284-9507.jpg"
       ></model-viewer>
     </div>
   );
