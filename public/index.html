@@ -30,8 +30,12 @@
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
       crossorigin="anonymous"
     />
-    <title>React App</title>
-    <script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
+    <title>Shopease 3D</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-room-component/dist/aframe-room-component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+    <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v1.16.0/dist/aframe-extras.min.js"></script>
+
     <script src="https://rawgit.com/ngokevin/kframe/csstricks/scenes/aincraft/components/random-color.js"></script>
     <script src="https://rawgit.com/ngokevin/kframe/csstricks/scenes/aincraft/components/snap.js"></script>
     <script src="https://rawgit.com/ngokevin/kframe/csstricks/scenes/aincraft/components/intersection-spawn.js"></script>
@@ -43,6 +47,129 @@
       src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"
     ></script>
     <div id="root"></div>
+    <script>
+      var spaceship1Location;
+      var spaceship2Location;
+
+      AFRAME.registerComponent("eventhandling", {
+        tick: function () {
+          var data = this.data;
+          var el = this.el;
+          var current_event;
+          var entity = document.querySelector("#duck1");
+          el.addEventListener("animationcomplete", function () {
+            // set from
+            // var otherBox = document.querySelector('#duck1');
+            // otherBox.setAttribute('animation', 'property: from; to:'+spaceship1Location);
+            entity.emit("starteventforAnimation");
+          });
+        },
+      });
+
+      AFRAME.registerComponent("eventhandlingduck2", {
+        tick: function () {
+          var data = this.data;
+          var el = this.el;
+          var current_event;
+          var entity = document.querySelector("#duck2");
+          el.addEventListener("animationcomplete", function () {
+            // set from
+            // var otherBox = document.querySelector('#duck2');
+            // otherBox.setAttribute('animation', 'property: from; to:'+spaceship2Location);
+            entity.emit("starteventforAnimationduck2");
+          });
+        },
+      });
+
+      AFRAME.registerComponent("locationupdate1", {
+        init: function () {
+          this.worldpos = new THREE.Vector3();
+        },
+        // utility function
+        posToString: function (pos) {
+          return (
+            pos.x.toFixed(2) + " " + pos.y.toFixed(2) + " " + pos.z.toFixed(2)
+          );
+        },
+
+        tick: function () {
+          this.el.getObject3D("mesh").getWorldPosition(this.worldpos);
+          console.log(this.posToString(this.worldpos));
+          spaceship1Location = this.posToString(this.worldpos);
+        },
+      });
+
+      AFRAME.registerComponent("locationupdate2", {
+        init: function () {
+          this.worldpos = new THREE.Vector3();
+        },
+        // utility function
+        posToString: function (pos) {
+          return (
+            pos.x.toFixed(2) + " " + pos.y.toFixed(2) + " " + pos.z.toFixed(2)
+          );
+        },
+
+        tick: function () {
+          this.el.getObject3D("mesh").getWorldPosition(this.worldpos);
+          console.log(this.posToString(this.worldpos));
+          spaceship2Location = this.posToString(this.worldpos);
+        },
+      });
+
+      AFRAME.registerComponent("collison-check", {
+        schema: {
+          el: {
+            type: "selector",
+          },
+          radius: {
+            default: 0,
+          },
+          otherRadius: {
+            default: 0,
+          },
+          score: {
+            type: "int",
+            default: 0,
+          },
+          colliding: {
+            default: false,
+          },
+        },
+        init: function () {
+          this.worldposfirst = new THREE.Vector3();
+          this.worldpossecond = new THREE.Vector3();
+        },
+        posToString: function (pos) {
+          return (
+            pos.x.toFixed(2) + " " + pos.y.toFixed(2) + " " + pos.z.toFixed(2)
+          );
+        },
+        tick: function () {
+          this.el.getObject3D("mesh").getWorldPosition(this.worldposfirst);
+          this.data.el
+            .getObject3D("mesh")
+            .getWorldPosition(this.worldpossecond);
+          var dist = this.worldposfirst.distanceTo(this.worldpossecond);
+          var entity = document.querySelector("#score");
+          if (dist < this.data.radius + this.data.otherRadius) {
+            if (!this.data.colliding) {
+              this.data.score++;
+              this.data.colliding = true;
+              entity.emit("updateScore");
+              AFRAME.utils.entity.setComponentProperty(
+                entity,
+                "text.value",
+                "score \n" + this.data.score
+              );
+            }
+          } else {
+            this.data.colliding = false;
+          }
+        },
+      });
+    </script>
+
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

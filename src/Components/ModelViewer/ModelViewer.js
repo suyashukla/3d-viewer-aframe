@@ -15,7 +15,7 @@ function ModelViewer() {
         seamless-poster
         shadow-intensity="1"
         camera-controls
-        poster="https://image.freepik.com/free-vector/chair-realistic-illustration_1284-9507.jpg"
+        poster="https://shopease-b42a1.web.app/img/shop_ease_logo1.png"
       ></model-viewer>
     </div>
   );

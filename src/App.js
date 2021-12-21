@@ -1,7 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import ModelViewer from "./Components/ModelViewer";
-import Playground from "./Components/Playground";
+import DuckGame from "./Components/DuckGame/DuckGame";
+import FreeRoam from "./Components/3dGallery/FreeRoam";
+import ModelViewer from "./Components/ModelViewer/ModelViewer";
+import Playground from "./Components/Playground/Playground";
 
 function App() {
   return (
@@ -9,6 +11,8 @@ function App() {
     <Router>
       <Route path="/playground" exact component={Playground} />
       <Route path="/model/:url" component={ModelViewer} />
+      <Route path="/freeroam" component={FreeRoam} />
+      <Route path="/duckgame" component={DuckGame} />
     </Router>
   );
 }
